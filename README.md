@@ -2,7 +2,9 @@
 
 **MoonBit 可嵌入的 JSON 配置三方合并与冲突审查工具。**
 
-v0.2 原型已完成“发现冲突 → 显式决策 → 最终配置 → 校验补丁 → 回放核对”的流程。完整源码已上传 GitHub，[远程 CI 已通过](docs/ci-verification.md)。项目用于准备 2026 MoonBit 黑客松；尚未完成报名或 Mooncakes 发布。
+v0.2 原型已完成“发现冲突 → 显式决策 → 最终配置 → 校验补丁 → 回放核对”的流程。完整源码已上传 GitHub，[远程 CI 已通过](docs/ci-verification.md)。项目用于准备 2026 MoonBit 黑客松；正式报名尚未完成。
+
+[Mooncakes 版本 0.2.0](https://mooncakes.io/docs/forey217/moonconfig@0.2.0) 已发布，并通过未登录账号的独立目录安装、构建和公开 API 测试；见 [发布与安装验证记录](docs/registry-verification.md)。
 
 例如：一人修改端口，一人修改日志等级，自动合并独立字段；双方修改同一端口时，逐项选择原值、某一方、删除或自定义值。导出的补丁先校验整个原始配置，避免应用到已经变化的版本。
 
@@ -62,6 +64,12 @@ node scripts/moonconfig.mjs get examples/base.json /server/port
 
 ## MoonBit API 与独立复用
 
+在自己的 MoonBit 模块中安装版本依赖：
+
+```sh
+moon add forey217/moonconfig@0.2.0
+```
+
 在 moon.pkg 中导入：
 
 ```moonbit
@@ -93,7 +101,7 @@ moon run cmd/main --target js
 moon test --package forey217/config-gate-example --target js --deny-warn
 ```
 
-已经验证跨模块接入；尚未验证从 Mooncakes 安装。示例属于集成证据，不代表外部用户采用或生产部署。
+已经验证本地跨模块接入及从 Mooncakes 安装 0.2.0。Registry 验证在仓库外的独立模块运行，没有工作区依赖覆盖；公开接口测试在 JS 与 Wasm GC 上通过。示例属于集成证据，不代表外部用户采用或生产部署。
 
 ## 合并语义与边界
 
@@ -109,7 +117,7 @@ moon test --package forey217/config-gate-example --target js --deny-warn
 
 生态已有 [tiye/recollect](https://mooncakes.io/docs/tiye/recollect) 等 JSON diff/patch 工具。本项目聚焦配置三方合并、明确的缺失/null 冲突、显式决策和可校验的审查输出。不宣称该领域空白、首创或优于已有项目的性能。
 
-目前证据是公开源码、可运行的公开 API、独立消费模块、网页闭环及已通过的远程 CLI/CI 场景验证；Mooncakes 发布和外部采用仍未完成。
+目前证据是公开源码、可安装的 Mooncakes 包、可运行的公开 API、独立消费模块、网页闭环及已通过的远程 CLI/CI 场景验证；外部采用仍未验证。
 
 ## 验证
 
@@ -135,6 +143,7 @@ JS 和 WebAssembly GC 已在本地验证；Linux GitHub Actions 的 JS、WebAsse
 - [对照初审反馈的进度](docs/review-plan.md)
 - [开发与验证记录](docs/development.md)
 - [远程 CI 验证证据](docs/ci-verification.md)
+- [Mooncakes 发布与安装验证](docs/registry-verification.md)
 - [English README](README_EN.md)
 
 实现依照 RFC 6901/6902 行为独立编写。上游测试来自 json-patch/json-patch-tests，保留 Apache-2.0 许可；详见 THIRD_PARTY_NOTICES.md。项目代码 MIT。开发使用 AI 辅助，参赛者需理解实现、审查成果并承担维护责任。

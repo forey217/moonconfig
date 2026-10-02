@@ -10,6 +10,6 @@ license = "MIT"
 
 keywords = [ "json", "config", "diff", "json-patch", "merge" ]
 
-description = "JSON configuration diff, atomic patches, and explicit three-way conflicts"
+description = "JSON configuration three-way review with explicit decisions and guarded patch replay"
 
 preferred_target = "js"

@@ -17,7 +17,9 @@ npm run demo
 
 Open http://127.0.0.1:4173. Use the conflict scenario, choose each result, confirm, then export the final value or guarded patch. Inputs stay in the browser. Changing inputs clears decisions.
 
-The full source is available on GitHub, and remote CI has passed. Mooncakes publication and contest registration are not complete. See the [remote verification record](docs/ci-verification.md).
+The full source is available on GitHub, and remote CI has passed. Contest registration is not complete. See the [remote verification record](docs/ci-verification.md).
+
+[Version 0.2.0 is published on Mooncakes](https://mooncakes.io/docs/forey217/moonconfig@0.2.0). An unauthenticated standalone consumer has installed, built and tested the registry package. See the [publication and installation record](docs/registry-verification.md).
 
 ## CLI
 
@@ -37,6 +39,12 @@ Exit codes: 0 success, 1 input/I/O/operation/decision error, 2 unresolved merge 
 
 ## Independent reuse
 
+Install the versioned dependency in your own MoonBit module:
+
+```sh
+moon add forey217/moonconfig@0.2.0
+```
+
 The core uses only the MoonBit standard library. Public APIs include merge, resolve, guarded_diff, diff and apply. See pkg.generated.mbti and the Chinese README.
 
 examples/consumer has its own module manifest and uses only public APIs. moon.work resolves the versioned dependency to local source:
@@ -47,7 +55,7 @@ moon run cmd/main --target js
 moon test --package forey217/config-gate-example --target js --deny-warn
 ```
 
-This demonstrates cross-module consumption, not registry installation or external adoption. Existing structural JSON diff/patch libraries include tiye/recollect. This project's focus is configuration three-way review with explicit decisions and guarded replay; it does not claim to be the first JSON diff library.
+The workspace example demonstrates cross-module consumption. A separate consumer outside the workspace has also installed version 0.2.0 from Mooncakes and passed its public API tests on JS and Wasm GC. These examples do not demonstrate external adoption or production deployment. Existing structural JSON diff/patch libraries include tiye/recollect. This project's focus is configuration three-way review with explicit decisions and guarded replay; it does not claim to be the first JSON diff library.
 
 ## Validation and boundaries
 
