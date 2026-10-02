@@ -39,8 +39,8 @@ function run() {
   $('conflicts').replaceChildren();
   try {
     const a = $('input-a').value, b = $('input-b').value, c = $('input-c').value;
-    const fields = mode === 'merge' ? `"base":${a},"ours":${b},"theirs":${c}` : mode === 'diff' ? `"old":${a},"new":${b}` : `"document":${a},"patch":${b}`;
-    const response = engine.run_json(`{"command":"${mode}",${fields}}`);
+    const fields = mode === 'merge' ? {base_text:a,ours_text:b,theirs_text:c} : mode === 'diff' ? {old_text:a,new_text:b} : {document_text:a,patch_text:b};
+    const response = engine.run_json(JSON.stringify({command:mode,...fields}));
     const metadata = JSON.parse(response);
     if (!metadata.ok) throw new Error(metadata.error);
     // MoonBit serializes the result: JS never re-stringifies user numeric values.

@@ -14,21 +14,21 @@ pub fn run_json(request_text : String) -> String {
     }
     let result = match required_string(o, "command") {
       "diff" =>
-        patch_json(diff(required_field(o, "old"), required_field(o, "new")))
+        patch_json(diff(input_document(o, "old"), input_document(o, "new")))
       "apply" =>
         apply(
-          required_field(o, "document"),
-          parse_patch(required_field(o, "patch")),
+          input_document(o, "document"),
+          parse_patch(input_document(o, "patch")),
         )
       "merge" =>
         merge_json(
           merge(
-            required_field(o, "base"),
-            required_field(o, "ours"),
-            required_field(o, "theirs"),
+            input_document(o, "base"),
+            input_document(o, "ours"),
+            input_document(o, "theirs"),
           ),
         )
-      "get" => get(required_field(o, "document"), required_string(o, "path"))
+      "get" => get(input_document(o, "document"), required_string(o, "path"))
       other => raise InvalidPatch("unknown command: " + other)
     }
     response["ok"] = Json::boolean(true)
@@ -42,6 +42,17 @@ pub fn run_json(request_text : String) -> String {
     }
   }
   Json::object(response).stringify()
+}
+
+///|
+// Text adapters encode documents as strings and parse them separately. This
+// prevents malformed input from injecting fields into the request envelope.
+fn input_document(o : Map[String, Json], field : String) -> Json raise {
+  match o.get(field + "_text") {
+    Some(String(text)) => @json.parse(text)
+    Some(_) => raise InvalidPatch(field + "_text must be a string")
+    None => required_field(o, field)
+  }
 }
 
 ///|

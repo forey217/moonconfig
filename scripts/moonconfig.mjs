@@ -18,13 +18,13 @@ try {
     if (text.length > 4000000) throw new Error(`Input exceeds limit: ${path}`);
     return text.replace(/^\uFEFF/, '');
   };
-  if (command === 'diff' && args.length === 2) fields = `"old":${await source(args[0])},"new":${await source(args[1])}`;
-  else if (command === 'apply' && args.length === 2) fields = `"document":${await source(args[0])},"patch":${await source(args[1])}`;
-  else if (command === 'merge' && args.length === 3) fields = `"base":${await source(args[0])},"ours":${await source(args[1])},"theirs":${await source(args[2])}`;
-  else if (command === 'get' && args.length === 2) fields = `"document":${await source(args[0])},"path":${JSON.stringify(args[1])}`;
+  if (command === 'diff' && args.length === 2) fields = {old_text:await source(args[0]),new_text:await source(args[1])};
+  else if (command === 'apply' && args.length === 2) fields = {document_text:await source(args[0]),patch_text:await source(args[1])};
+  else if (command === 'merge' && args.length === 3) fields = {base_text:await source(args[0]),ours_text:await source(args[1]),theirs_text:await source(args[2])};
+  else if (command === 'get' && args.length === 2) fields = {document_text:await source(args[0]),path:args[1]};
   else throw new Error(usage);
   // Raw JSON crosses the boundary. Never parse/re-stringify user numbers in JS.
-  const response = run_json(`{"command":${JSON.stringify(command)},${fields}}`);
+  const response = run_json(JSON.stringify({command,...fields}));
   const metadata = JSON.parse(response);
   if (!metadata.ok) { console.error(metadata.error); process.exitCode = 1; }
   else {

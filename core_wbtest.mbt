@@ -253,6 +253,10 @@ test "depth and numeric exponent limits return errors" {
 test "bridge reports malformed input as data" {
   let r = j(run_json("not-json"))
   assert_eq(get(r, "/ok"), Json::boolean(false))
+  let bad = j(
+    run_json("{\"command\":\"diff\",\"old_text\":\"0,1\",\"new_text\":\"{}\"}"),
+  )
+  assert_eq(get(bad, "/ok"), Json::boolean(false))
 }
 
 ///|

@@ -10,7 +10,7 @@ JSON 配置经过多人修改后，文本冲突不能直接解释业务字段的
 
 `JSON 文本 → MoonBit JSON 解析 → 验证 → diff / apply / merge → MoonBit JSON 序列化`
 
-CLI 和演示将原始 JSON 文本传给引擎。JavaScript 的 JSON.parse 仅用于读取结果状态；实际输出由引擎序列化，避免大整数在 JavaScript Number 中四舍五入。
+CLI 和演示将原始 JSON 文本作为 JSON 字符串字段传给引擎，再分别解析各文档；不把未验证的文档文本拼接进请求对象。JavaScript 的 JSON.parse 仅用于读取结果状态；实际输出由引擎序列化，避免大整数在 JavaScript Number 中四舍五入。
 
 ## 三方合并
 

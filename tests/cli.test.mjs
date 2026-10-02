@@ -23,6 +23,7 @@ test('CLI: exact integers, patch roundtrip, conflicts, and errors', () => {
     assert.equal(cli('merge', a, b, a).status, 0);
     assert.equal(cli('get', a, '/missing').status, 1);
     assert.equal(cli('diff', a, save('bad.json', '{')).status, 1);
+    assert.equal(cli('diff', save('injected.json', '0,"command":"get","document":42,"path":"","junk":0'), b).status, 1);
     assert.equal(cli('get', a, '/id').stdout.trim(), '9007199254740992');
   } finally { rmSync(dir, {recursive:true, force:true}); }
 });
