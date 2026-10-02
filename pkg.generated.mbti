@@ -1,0 +1,74 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "forey217/moonconfig"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn apply(Json, Array[Operation]) -> Json raise ConfigError
+
+pub fn diff(Json, Json) -> Array[Operation] raise ConfigError
+
+pub fn get(Json, String) -> Json raise ConfigError
+
+pub fn merge(Json, Json, Json) -> MergeResult raise ConfigError
+
+pub fn merge_json(MergeResult) -> Json
+
+pub fn parse_patch(Json) -> Array[Operation] raise ConfigError
+
+pub fn patch_json(Array[Operation]) -> Json
+
+pub fn pointer_tokens(String) -> Array[String] raise ConfigError
+
+pub fn result_json(String) -> String
+
+pub fn run_json(String) -> String
+
+// Errors
+pub(all) suberror ConfigError {
+  InvalidPointer(String)
+  InvalidIndex(String)
+  MissingPath(String)
+  InvalidPatch(String)
+  TestFailed(String)
+  InvalidMove(String)
+  LimitExceeded(String)
+} derive(@debug.Debug)
+pub fn ConfigError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub(all) struct Conflict {
+  path : String
+  base : Json?
+  ours : Json?
+  theirs : Json?
+} derive(Eq, @debug.Debug)
+pub fn Conflict::equal(Self, Self) -> Bool
+pub fn Conflict::not_equal(Self, Self) -> Bool
+pub fn Conflict::to_repr(Self) -> @debug.Repr
+
+pub(all) struct MergeResult {
+  value : Json
+  conflicts : Array[Conflict]
+} derive(Eq, @debug.Debug)
+pub fn MergeResult::equal(Self, Self) -> Bool
+pub fn MergeResult::not_equal(Self, Self) -> Bool
+pub fn MergeResult::to_repr(Self) -> @debug.Repr
+
+pub(all) enum Operation {
+  Add(String, Json)
+  Remove(String)
+  Replace(String, Json)
+  Move(String, String)
+  Copy(String, String)
+  Test(String, Json)
+} derive(Eq, @debug.Debug)
+pub fn Operation::equal(Self, Self) -> Bool
+pub fn Operation::not_equal(Self, Self) -> Bool
+pub fn Operation::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

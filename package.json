@@ -1,0 +1,10 @@
+{
+  "name": "moonconfig", "version": "0.1.0", "private": true, "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "moon test --target js --deny-warn && node --test tests/cli.test.mjs",
+    "demo": "node scripts/serve.mjs",
+    "cli": "node scripts/moonconfig.mjs"
+  },
+  "engines": {"node": ">=20"}, "license": "MIT"
+}

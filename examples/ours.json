@@ -1,0 +1,1 @@
+{"server":{"host":"localhost","port":9090},"logging":{"level":"info"},"features":["search","export"]}

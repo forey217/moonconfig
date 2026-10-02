@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MoonConfig · 配置变更工作台</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><a class="brand" href="./"><span class="moon" aria-hidden="true"></span>MoonConfig<span class="version">v0.1</span></a><div class="header-right"><span class="local"><i></i>本地处理</span><a href="https://github.com/forey217/moonconfig" target="_blank" rel="noreferrer">GitHub ↗</a></div></header>
+<main>
+<section class="intro"><div><p class="eyebrow">MOONBIT CONFIGURATION TOOLKIT</p><h1>让配置变更，<span>清清楚楚。</span></h1><p class="subtitle">比较字段、生成补丁、合并修改。冲突由你决定。</p></div><div class="intro-note"><span>01 / 工作台</span><p>同一份 MoonBit 核心<br>驱动浏览器与命令行</p></div></section>
+<section class="workspace" aria-label="配置工作台">
+<div class="toolbar"><div class="tabs" role="tablist" aria-label="操作"><button role="tab" data-mode="merge" aria-selected="true">三方合并</button><button role="tab" data-mode="diff" aria-selected="false">比较配置</button><button role="tab" data-mode="apply" aria-selected="false">应用补丁</button></div><span class="toolbar-note">JSON · 无需上传文件</span></div>
+<div class="scenario"><span>试一个场景</span><button data-sample="independent">独立修改</button><button data-sample="conflict">同字段冲突</button><button data-sample="large">大整数变更</button><span class="array-note">数组按整体比较与合并</span></div>
+<div class="editors" id="editors"><section class="editor"><div class="editor-heading"><label for="input-a" id="label-a">原始版本</label><span id="hint-a">BASE</span></div><textarea id="input-a" spellcheck="false" aria-describedby="help"></textarea></section><section class="editor"><div class="editor-heading"><label for="input-b" id="label-b">我的修改</label><span id="hint-b">OURS</span></div><textarea id="input-b" spellcheck="false"></textarea></section><section class="editor" id="third-editor"><div class="editor-heading"><label for="input-c">另一份修改</label><span>THEIRS</span></div><textarea id="input-c" spellcheck="false"></textarea></section></div>
+<div class="action-bar"><p id="help">不同字段自动合并，同一字段的不同修改会报告冲突。</p><button class="primary" id="run" disabled>加载核心中…</button></div>
+</section>
+<section class="results" aria-label="处理结果"><div class="result-header"><div><span class="eyebrow">RESULT</span><h2>处理结果</h2></div><div class="result-actions"><span id="status" class="status" role="status" aria-live="polite">等待运行</span><button id="copy" disabled>复制 JSON</button><button id="download" disabled>下载结果</button></div></div><div class="result-body"><aside><p class="result-caption" id="result-title">从一个场景开始</p><p id="summary">载入示例或粘贴配置，查看可复现的处理结果。</p><ul id="conflicts"></ul><p class="fine" id="result-note">发生冲突时，结果中的对应字段保留原始值。这份结果是预览，需要处理冲突后再使用。</p></aside><pre id="output" tabindex="0" aria-label="JSON 结果">// 结果将在这里显示</pre></div></section>
+<footer><span>MoonBit 黑客松 2026 · forey217</span><span>结构化比较 / 原子补丁 / 明确冲突</span></footer>
+</main><script type="module" src="app.js"></script>
+</body></html>

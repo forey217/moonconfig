@@ -1,0 +1,15 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "forey217/moonconfig/cmd/engine"
+
+// Values
+pub fn result_json(String) -> String
+
+pub fn run_json(String) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
