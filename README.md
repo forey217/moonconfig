@@ -98,6 +98,7 @@ node --test tests/cli.test.mjs
 
 - [设计与取舍](docs/design.md)
 - [项目申报草稿](docs/proposal.md)
+- [对照上次初审反馈的改进计划](docs/review-plan.md)
 - [开发记录与验证](docs/development.md)
 - [English README](README_EN.md)
 
