@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Browser downloads confirmed decisions as a CLI-compatible JSON file. Custom values remain raw JSON text, preserving large integers. Input or decision changes invalidate the confirmed export; added a CLI replay regression test for this format.
+
+- CLI `--save FILE` writes UTF-8 results atomically and refuses existing output paths, including inputs and symlinks. Invalid input creates no result file; merge preview exit codes remain unchanged. Added process-level tests for saving, exact replay, failed saves and unchanged inputs.
+
 ## 0.2.0 — 2026-10-02
 
 Complete conflict review: explicit decisions, custom JSON and deletion, validated final configuration, guarded patch replay, CLI exports and browser decision controls. Added a separate MoonBit consumer module, complete CLI workflow tests, CI template and documented benchmark. Patch payload limits apply to individual values so guarded patches can carry both base and target. Full source is available on GitHub; remote CI including native tests has passed.

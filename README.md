@@ -31,7 +31,7 @@ npm run demo
 
 无需 npm install，本项目没有 npm 依赖。GitHub 仓库包含完整源码、消费示例和自动验证流程。
 
-打开 http://127.0.0.1:4173，尝试“同字段冲突”“删除与 null”“大整数变更”。选择每个冲突，再确认并导出最终配置或补丁。修改输入会清除已有决策。所有配置计算在当前浏览器本地完成，没有上传接口。
+打开 http://127.0.0.1:4173，尝试“同字段冲突”“删除与 null”“大整数变更”。选择每个冲突，再确认并导出最终配置或补丁。修改输入会清除已有决策。所有配置计算在当前浏览器本地完成，没有上传接口。确认后可下载决策文件供 CLI 复用，自定义 JSON 使用原始文本保存，保留大整数精度。
 
 ## 命令行审查流程
 
@@ -60,7 +60,16 @@ node scripts/moonconfig.mjs apply examples/base.json examples/patch.json
 node scripts/moonconfig.mjs get examples/base.json /server/port
 ```
 
-退出码 0 成功、1 输入/文件/操作/决策错误、2 未解决的 merge 冲突。结果写 stdout，错误写 stderr；输入文件不会被覆盖。保存输出请使用 UTF-8，Windows PowerShell 5 可用 Out-File -Encoding utf8，CLI 接受 UTF-8 BOM。
+退出码 0 成功、1 输入/文件/操作/决策错误、2 未解决的 merge 冲突。默认结果写 stdout，错误写 stderr；CLI 接受 UTF-8 BOM。
+
+使用 `--save` 直接保存 UTF-8 结果，避免终端重定向覆盖输入文件或改变编码：
+
+```sh
+node scripts/moonconfig.mjs resolve examples/base.json examples/ours.json examples/conflict.json examples/decisions.json --output patch --save reviewed-patch.json
+node scripts/moonconfig.mjs apply examples/base.json reviewed-patch.json --save reviewed-config.json
+```
+
+所有命令支持 `--save FILE`，保存后 stdout 留空，stderr 提示文件路径。目标必须不存在；输入文件、已有输出和符号链接都不会被覆盖。写完并同步临时文件后，以硬链接原子发布结果，因此需要支持硬链接的文件系统（如 NTFS、ext4）。无效输入不生成输出。保存 merge 冲突预览仍返回退出码 2，不应当作最终配置。`--` 后的参数按原样处理，可用于以 `--` 开头的文件名或路径。
 
 ## MoonBit API 与独立复用
 
@@ -131,7 +140,7 @@ npm run build
 node --test tests/cli.test.mjs tests/workflow.test.mjs
 ```
 
-工作区共 150 个 MoonBit 测试：库内 148 个（108 个上游 JSON Patch 用例、40 个项目测试），另有独立消费模块 2 个黑盒测试。矩阵用例覆盖 121 组 diff/apply 往返。3 个 Node 集成测试启动真实 CLI，验证精度、冲突、决策、导出、回放、旧 base 拒绝及输入文件不变。
+工作区共 150 个 MoonBit 测试：库内 148 个（108 个上游 JSON Patch 用例、40 个项目测试），另有独立消费模块 2 个黑盒测试。矩阵用例覆盖 121 组 diff/apply 往返。5 个 Node 集成测试启动真实 CLI，验证精度、冲突、决策、导出、回放、旧 base 拒绝及输入文件不变。
 
 JS 和 WebAssembly GC 已在本地验证；Linux GitHub Actions 的 JS、WebAssembly GC、原生测试、构建、独立消费示例与 Node 集成测试均已通过，见 [远程验证记录](docs/ci-verification.md)。本地 Windows 缺少 C 编译器。基准脚本 `node scripts/benchmark.mjs` 与 [测量记录](docs/benchmark.md) 提供方法和本机结果，不承诺跨环境性能。
 
