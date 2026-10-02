@@ -136,7 +136,7 @@ function confirmDecisions() {
     const decisions = decisionRows.map(row => ({path:row.path, choice:row.select.value, ...(row.select.value === 'custom' ? {value_text:row.custom.value} : {})}));
     const {response, result} = invoke({...mergeRequest, command:'resolve', decisions_text:JSON.stringify(decisions)});
     if (!result.verified) throw new Error('补丁回放校验未完成');
-    finalOutputs = {value:engine.result_field_json(response,'value'),patch:engine.result_field_json(response,'patch'),report:engine.result_json(response)};
+    finalOutputs = {value:engine.result_field_json(response,'value'),patch:engine.result_field_json(response,'patch'),report:engine.result_json(response),decisions:JSON.stringify(decisions,null,2)};
     $('exports').hidden = false; selectOutput('value');
     $('status').textContent = '已确认 · 补丁回放通过'; $('status').className = 'status good';
     $('result-title').textContent = '最终配置已生成';
@@ -180,6 +180,7 @@ $('run').addEventListener('click', run); $('resolve').addEventListener('click', 
 $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(output); $('copy').textContent = '已复制'; setTimeout(() => $('copy').textContent = '复制 JSON',1500); } catch { $('status').textContent = '请手动选择结果复制'; } });
 $('download').addEventListener('click', () => download(output,outputName));
 $('download-patch').addEventListener('click', () => { if (finalOutputs) download(finalOutputs.patch,'patch'); });
+$('download-decisions').addEventListener('click', () => { if (finalOutputs) download(finalOutputs.decisions,'decisions'); });
 setMode('merge');
 try { engine = await import('./engine.js'); $('run').disabled = false; run(); }
 catch { $('run').textContent = '核心未加载'; $('status').textContent = '请先运行 npm run build'; $('status').className = 'status error'; }

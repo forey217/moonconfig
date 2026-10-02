@@ -15,7 +15,7 @@ npm run build
 npm run demo
 ```
 
-Open http://127.0.0.1:4173. Use the conflict scenario, choose each result, confirm, then export the final value or guarded patch. Inputs stay in the browser. Changing inputs clears decisions.
+Open http://127.0.0.1:4173. Use the conflict scenario, choose each result, confirm, then export the final value or guarded patch. Inputs stay in the browser. Changing inputs clears decisions. After confirmation, download the decisions file for CLI reuse; custom JSON remains raw text to preserve exact large integers.
 
 The full source is available on GitHub, and remote CI has passed. Contest registration is not complete. See the [remote verification record](docs/ci-verification.md).
 
@@ -35,7 +35,16 @@ node scripts/moonconfig.mjs get DOCUMENT.json /path
 
 Decisions: `[{"path":"/port","choice":"custom","value":9443}]`. Choices are base, ours, theirs, delete, custom. Missing/duplicate/unknown choices and invalid values fail. Empty decisions are valid for clean merges.
 
-Exit codes: 0 success, 1 input/I/O/operation/decision error, 2 unresolved merge conflicts. Results go to stdout, errors to stderr. Files are never overwritten. Use UTF-8 for output; a UTF-8 BOM is accepted.
+Exit codes: 0 success, 1 input/I/O/operation/decision error, 2 unresolved merge conflicts. Results go to stdout by default; errors go to stderr. A UTF-8 BOM is accepted.
+
+All commands support `--save FILE` for UTF-8 output without shell redirection:
+
+```sh
+node scripts/moonconfig.mjs resolve BASE.json OURS.json THEIRS.json DECISIONS.json --output patch --save reviewed-patch.json
+node scripts/moonconfig.mjs apply BASE.json reviewed-patch.json --save reviewed-config.json
+```
+
+The destination must not exist. Inputs, existing outputs and symlinks are never replaced. The CLI writes and syncs a temporary file, then atomically publishes a hard link; the filesystem must support hard links, such as NTFS or ext4. Invalid input creates no result file. With `--save`, stdout is empty and stderr reports the path. Saving an unresolved merge preview still returns 2. Arguments following `--` are treated literally.
 
 ## Independent reuse
 
@@ -59,7 +68,7 @@ The workspace example demonstrates cross-module consumption. A separate consumer
 
 ## Validation and boundaries
 
-150 MoonBit workspace tests: 148 library tests (108 upstream cases and 40 project tests) plus 2 consumer black-box tests. Three Node tests exercise real CLI processes and the complete review workflow. JS and Wasm GC are validated locally. Linux GitHub Actions has passed JS, Wasm GC and native tests, the build, the independent consumer and the Node integration tests. See the [remote verification record](docs/ci-verification.md). A native C compiler remains unavailable on the local Windows machine.
+150 MoonBit workspace tests: 148 library tests (108 upstream cases and 40 project tests) plus 2 consumer black-box tests. Five Node tests exercise real CLI processes and the complete review workflow. JS and Wasm GC are validated locally. Linux GitHub Actions has passed JS, Wasm GC and native tests, the build, the independent consumer and the Node integration tests. See the [remote verification record](docs/ci-verification.md). A native C compiler remains unavailable on the local Windows machine.
 
 ```sh
 npm run test

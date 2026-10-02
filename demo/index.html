@@ -17,7 +17,7 @@
 <div class="review-heading"><div><h3>逐项确认修改</h3><p>每个冲突都需要选择。删除字段与填写 null 是两种不同操作。</p></div><span id="decision-count" role="status">已选择 0 / 0</span></div>
 <div id="decision-list"></div><div class="review-action"><span id="review-message">选择后生成最终配置和补丁。</span><button id="resolve" class="primary" disabled>确认全部选择并校验 →</button></div>
 </section>
-<div id="exports" class="export-toolbar" hidden><div class="output-tabs" role="group" aria-label="导出内容"><button data-output="value" aria-pressed="true">最终配置</button><button data-output="patch" aria-pressed="false">校验补丁</button><button data-output="report" aria-pressed="false">完整报告</button></div><button id="download-patch">下载校验补丁</button></div>
+<div id="exports" class="export-toolbar" hidden><div class="output-tabs" role="group" aria-label="导出内容"><button data-output="value" aria-pressed="true">最终配置</button><button data-output="patch" aria-pressed="false">校验补丁</button><button data-output="report" aria-pressed="false">完整报告</button></div><div class="output-tabs"><button id="download-decisions">下载决策文件</button><button id="download-patch">下载校验补丁</button></div></div>
 <div class="result-body"><aside><p class="result-caption" id="result-title">从一个场景开始</p><p id="summary">载入示例或粘贴配置，查看可复现的处理结果。</p><ul id="conflicts"></ul><p class="fine" id="result-note">冲突未确认时输出是预览。确认后可导出最终配置，以及只允许应用到原始版本的补丁。</p></aside><pre id="output" tabindex="0" aria-label="JSON 结果">// 结果将在这里显示</pre></div>
 </section>
 <footer><span>MoonBit 黑客松 2026 · forey217</span><span>结构化比较 / 原子补丁 / 明确冲突</span></footer>
