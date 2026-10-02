@@ -1,8 +1,8 @@
 {
-  "name": "moonconfig", "version": "0.1.0", "private": true, "type": "module",
+  "name": "moonconfig", "version": "0.2.0", "private": true, "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "moon test --target js --deny-warn && node --test tests/cli.test.mjs",
+    "test": "npm run build && moon test --target js --deny-warn && node --test tests/cli.test.mjs tests/workflow.test.mjs",
     "demo": "node scripts/serve.mjs",
     "cli": "node scripts/moonconfig.mjs"
   },

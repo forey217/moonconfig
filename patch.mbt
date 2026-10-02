@@ -23,7 +23,6 @@ fn required_string(
 ///|
 /// Unknown operation members are ignored, as required by RFC 6902.
 pub fn parse_patch(value : Json) -> Array[Operation] raise ConfigError {
-  validate_document(value)
   guard value is Array(ops) else {
     raise InvalidPatch("patch must be an array")
   }
@@ -37,10 +36,22 @@ pub fn parse_patch(value : Json) -> Array[Operation] raise ConfigError {
     let path = required_string(o, "path")
     let _ = pointer_tokens(path)
     match required_string(o, "op") {
-      "add" => Add(path, required_field(o, "value"))
+      "add" => {
+        let v = required_field(o, "value")
+        validate_document(v)
+        Add(path, v)
+      }
       "remove" => Remove(path)
-      "replace" => Replace(path, required_field(o, "value"))
-      "test" => Test(path, required_field(o, "value"))
+      "replace" => {
+        let v = required_field(o, "value")
+        validate_document(v)
+        Replace(path, v)
+      }
+      "test" => {
+        let v = required_field(o, "value")
+        validate_document(v)
+        Test(path, v)
+      }
       "move" => {
         let source = required_string(o, "from")
         let _ = pointer_tokens(source)

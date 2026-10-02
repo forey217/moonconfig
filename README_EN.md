@@ -1,62 +1,64 @@
 # MoonConfig
 
-A MoonBit library for structured JSON diffs, atomic JSON Patch application, and three-way configuration merges. This is a v0.1 prototype prepared for the 2026 MoonBit hackathon; registration and acceptance are not yet complete.
+A MoonBit JSON configuration review library: three-way merge, explicit conflict decisions, final configuration and base-guarded JSON Patch replay.
 
-Independent object-field edits merge automatically. Different edits at the same location produce explicit conflicts and retain the base value in the review preview. Missing fields and JSON null are distinct. Arrays are treated as whole values.
+Version 0.2 closes the review loop. Independent object changes merge; conflicts require exactly one choice (base/ours/theirs/delete/custom). Missing fields differ from null. The final patch starts with a whole-base test, and the core verifies that replay produces the final configuration. Stale configurations are rejected.
 
 ## Run
 
-Requires the official MoonBit toolchain and Node.js 20+. No npm dependencies or npm install step.
+Requires the official MoonBit toolchain and Node.js 20+. No npm dependencies.
 
 ```sh
-git clone https://github.com/forey217/moonconfig.git
-cd moonconfig
 npm run build
-node scripts/moonconfig.mjs merge examples/base.json examples/ours.json examples/theirs.json
 npm run demo
 ```
 
-Visit http://127.0.0.1:4173 for the browser workbench. The browser processes configuration locally. The server only serves static demo files.
+Open http://127.0.0.1:4173. Use the conflict scenario, choose each result, confirm, then export the final value or guarded patch. Inputs stay in the browser. Changing inputs clears decisions.
+
+The full source currently exists in the delivered project package and local Git history. GitHub synchronization, Mooncakes publication and contest registration are not complete.
 
 ## CLI
 
 ```sh
+node scripts/moonconfig.mjs merge BASE.json OURS.json THEIRS.json
+node scripts/moonconfig.mjs resolve BASE.json OURS.json THEIRS.json DECISIONS.json
+node scripts/moonconfig.mjs resolve BASE.json OURS.json THEIRS.json DECISIONS.json --output value
+node scripts/moonconfig.mjs resolve BASE.json OURS.json THEIRS.json DECISIONS.json --output patch
 node scripts/moonconfig.mjs diff OLD.json NEW.json
 node scripts/moonconfig.mjs apply DOCUMENT.json PATCH.json
-node scripts/moonconfig.mjs merge BASE.json OURS.json THEIRS.json
 node scripts/moonconfig.mjs get DOCUMENT.json /path
 ```
 
-Results go to stdout and errors to stderr. Exit codes: 0 success, 1 input/I/O/operation error, 2 unresolved merge conflicts. Input files are never overwritten. Use UTF-8 for saved output; the CLI accepts a UTF-8 BOM.
+Decisions: `[{"path":"/port","choice":"custom","value":9443}]`. Choices are base, ours, theirs, delete, custom. Missing/duplicate/unknown choices and invalid values fail. Empty decisions are valid for clean merges.
 
-## Core behavior
+Exit codes: 0 success, 1 input/I/O/operation/decision error, 2 unresolved merge conflicts. Results go to stdout, errors to stderr. Files are never overwritten. Use UTF-8 for output; a UTF-8 BOM is accepted.
 
-- Deterministic object-field diffs generating JSON Patch; arrays use replace.
-- Strict JSON Pointer escaping and array indices.
-- add, remove, replace, move, copy, test; errors leave the input unchanged.
-- Three-way merges with explicit base/ours/theirs candidates and presence markers.
-- Decimal comparison without rounding through JavaScript Number, including large integers.
-- Deep copies isolate results from mutable input containers.
+## Independent reuse
 
-The core uses MoonBit's standard library only. See pkg.generated.mbti for public interfaces and the Chinese README for usage examples. This package is not yet published to Mooncakes.
+The core uses only the MoonBit standard library. Public APIs include merge, resolve, guarded_diff, diff and apply. See pkg.generated.mbti and the Chinese README.
 
-## Limits
-
-A merge with `clean:false` is a review preview requiring resolution. Root remove is unsupported because the API always returns a JSON document. There is no minimal-patch or full RFC-certification claim. Diffs exceeding 10000 operations fall back to one root replace.
-
-Documents: 128 levels, 100000 nodes; patches: 10000 operations; pointers: 128 segments; string bridge: 4000000 UTF-16 code units; decimal exponent: ±1000000. Duplicate keys use the parser's last-value rule. Whitespace and comments are not preserved. Precision already lost before entering the library cannot be recovered. These limits do not provide strict hostile-input resource isolation.
-
-## Verify
+examples/consumer has its own module manifest and uses only public APIs. moon.work resolves the versioned dependency to local source:
 
 ```sh
-moon fmt --check
-moon check --target js --deny-warn
-moon test --target js --deny-warn
-moon test --target wasm-gc --deny-warn
-npm run build
-node --test tests/cli.test.mjs
+cd examples/consumer
+moon run cmd/main --target js
+moon test --package forey217/config-gate-example --target js --deny-warn
 ```
 
-132 MoonBit tests include 108 enabled upstream JSON Patch cases and 24 project tests, including a 121-pair roundtrip matrix. Node integration tests exercise the actual CLI. JS and Wasm GC are tested locally. Windows native testing requires an unavailable C compiler; Linux native testing is configured in CI and still needs remote confirmation.
+This demonstrates cross-module consumption, not registry installation or external adoption. Existing structural JSON diff/patch libraries include tiye/recollect. This project's focus is configuration three-way review with explicit decisions and guarded replay; it does not claim to be the first JSON diff library.
 
-See [design](docs/design.md), [proposal draft](docs/proposal.md), and [development notes](docs/development.md). Code is MIT. Upstream test fixtures and generated conformance tests are Apache-2.0; see [third-party notices](THIRD_PARTY_NOTICES.md). AI assisted development; the participant must understand, review, and maintain the submitted work.
+## Validation and boundaries
+
+150 MoonBit workspace tests: 148 library tests (108 upstream cases and 40 project tests) plus 2 consumer black-box tests. Three Node tests exercise real CLI processes and the complete review workflow. JS and Wasm GC are validated locally; native requires a C compiler unavailable on this Windows machine. Remote CI remains unverified.
+
+```sh
+npm run test
+moon test --target wasm-gc --deny-warn
+node scripts/benchmark.mjs
+```
+
+Arrays are whole values. Root removal is unsupported. Base guards compare semantics, not bytes: object order and equivalent decimal spellings may change. No schema validation, minimal-patch or full RFC-certification claim. Returned JSON containers are mutable; revalidate after modifying them.
+
+Documents and operation values: 128 levels, 100000 nodes; patches: 10000 operations; decisions: 10000; pointers: 128 segments; bridge: 4000000 UTF-16 units; decimal exponent: ±1000000. Browser interaction is limited to 200 conflicts. Larger diffs fall back to root replacement while reserving a guard operation. Duplicate keys use the parser's last-value rule. These limits do not provide strict hostile-input resource isolation.
+
+See [review workflow](docs/workflow.md), [design](docs/design.md), [proposal](docs/proposal.md), [benchmark](docs/benchmark.md), and [review progress](docs/review-plan.md). Code is MIT; imported fixtures and generated conformance tests are Apache-2.0, documented in THIRD_PARTY_NOTICES.md. AI assisted development; the participant must understand and review the work.

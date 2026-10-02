@@ -28,6 +28,15 @@ pub fn run_json(request_text : String) -> String {
             input_document(o, "theirs"),
           ),
         )
+      "resolve" =>
+        resolved_json(
+          resolve(
+            input_document(o, "base"),
+            input_document(o, "ours"),
+            input_document(o, "theirs"),
+            parse_decisions(input_document(o, "decisions")),
+          ),
+        )
       "get" => get(input_document(o, "document"), required_string(o, "path"))
       other => raise InvalidPatch("unknown command: " + other)
     }
@@ -68,6 +77,7 @@ fn explain_error(error : Error) -> (String, String) {
     ConfigError::TestFailed(path) => ("test_failed", "Test failed at: " + path)
     ConfigError::InvalidMove(message) => ("invalid_move", message)
     ConfigError::LimitExceeded(message) => ("limit_exceeded", message)
+    ConfigError::InvalidResolution(message) => ("invalid_resolution", message)
     _ => ("invalid_json", "Invalid JSON input: " + error.to_string())
   }
 }
@@ -78,6 +88,31 @@ pub fn result_json(response : String) -> String {
   try {
     guard @json.parse(response) is Object(o) else { return response }
     required_field(o, "result").stringify(indent=2)
+  } catch {
+    _ => response
+  }
+}
+
+///|
+/// Project a review's final value or guarded patch without JS numeric rounding.
+pub fn result_field_json(response : String, field : String) -> String {
+  try {
+    guard @json.parse(response) is Object(o) else { return response }
+    guard required_field(o, "result") is Object(result) else { return response }
+    required_field(result, field).stringify(indent=2)
+  } catch {
+    _ => response
+  }
+}
+
+///|
+/// Read display values from trusted engine output, preserving numeric text.
+pub fn result_path_json(response : String, path : String) -> String {
+  try {
+    guard @json.parse(response) is Object(o) else { return response }
+    get_at(required_field(o, "result"), pointer_tokens(path), 0, path).stringify(
+      indent=2,
+    )
   } catch {
     _ => response
   }

@@ -1,0 +1,6 @@
+import {
+  "forey217/moonconfig" @config,
+  "moonbitlang/core/json",
+}
+
+pkgtype(kind: "executable")

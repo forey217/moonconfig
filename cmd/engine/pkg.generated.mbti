@@ -2,7 +2,11 @@
 package "forey217/moonconfig/cmd/engine"
 
 // Values
+pub fn result_field_json(String, String) -> String
+
 pub fn result_json(String) -> String
+
+pub fn result_path_json(String, String) -> String
 
 pub fn run_json(String) -> String
 

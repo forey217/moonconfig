@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {mkdtempSync, writeFileSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join, resolve, dirname, basename} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const cli = (...args) => spawnSync(process.execPath, ['scripts/moonconfig.mjs', ...args], {cwd: root, encoding:'utf8'});
@@ -25,5 +25,9 @@ test('CLI: exact integers, patch roundtrip, conflicts, and errors', () => {
     assert.equal(cli('diff', a, save('bad.json', '{')).status, 1);
     assert.equal(cli('diff', save('injected.json', '0,"command":"get","document":42,"path":"","junk":0'), b).status, 1);
     assert.equal(cli('get', a, '/id').stdout.trim(), '9007199254740992');
-  } finally { rmSync(dir, {recursive:true, force:true}); }
+  } finally {
+    assert.equal(dirname(resolve(dir)),resolve(tmpdir()));
+    assert.ok(basename(dir).startsWith('moonconfig-'));
+    rmSync(dir, {recursive:true, force:true});
+  }
 });

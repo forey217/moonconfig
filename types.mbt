@@ -8,6 +8,7 @@ pub(all) suberror ConfigError {
   TestFailed(String)
   InvalidMove(String)
   LimitExceeded(String)
+  InvalidResolution(String)
 } derive(@debug.Debug)
 
 ///|
@@ -45,6 +46,29 @@ pub(all) struct MergeResult {
 
 ///|
 pub extend MergeResult with Eq::{equal, not_equal}
+
+///|
+/// Every conflict requires an explicit choice. Delete differs from Set(Null).
+pub(all) enum Choice {
+  Base
+  Ours
+  Theirs
+  Set(Json)
+  Delete
+} derive(@debug.Debug)
+
+///|
+pub(all) struct Decision {
+  path : String
+  choice : Choice
+} derive(@debug.Debug)
+
+///|
+/// Final configuration and a patch guarded by a whole-base test.
+pub struct ResolvedMerge {
+  value : Json
+  patch : Array[Operation]
+} derive(@debug.Debug)
 
 ///|
 fn clone_json(value : Json) -> Json {
@@ -118,3 +142,12 @@ pub extend Conflict with @debug.Debug::{to_repr}
 
 ///|
 pub extend MergeResult with @debug.Debug::{to_repr}
+
+///|
+pub extend Choice with @debug.Debug::{to_repr}
+
+///|
+pub extend Decision with @debug.Debug::{to_repr}
+
+///|
+pub extend ResolvedMerge with @debug.Debug::{to_repr}

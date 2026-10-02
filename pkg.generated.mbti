@@ -12,9 +12,13 @@ pub fn diff(Json, Json) -> Array[Operation] raise ConfigError
 
 pub fn get(Json, String) -> Json raise ConfigError
 
+pub fn guarded_diff(Json, Json) -> Array[Operation] raise ConfigError
+
 pub fn merge(Json, Json, Json) -> MergeResult raise ConfigError
 
 pub fn merge_json(MergeResult) -> Json
+
+pub fn parse_decisions(Json) -> Array[Decision] raise ConfigError
 
 pub fn parse_patch(Json) -> Array[Operation] raise ConfigError
 
@@ -22,7 +26,15 @@ pub fn patch_json(Array[Operation]) -> Json
 
 pub fn pointer_tokens(String) -> Array[String] raise ConfigError
 
+pub fn resolve(Json, Json, Json, Array[Decision]) -> ResolvedMerge raise ConfigError
+
+pub fn resolved_json(ResolvedMerge) -> Json
+
+pub fn result_field_json(String, String) -> String
+
 pub fn result_json(String) -> String
+
+pub fn result_path_json(String, String) -> String
 
 pub fn run_json(String) -> String
 
@@ -35,10 +47,20 @@ pub(all) suberror ConfigError {
   TestFailed(String)
   InvalidMove(String)
   LimitExceeded(String)
+  InvalidResolution(String)
 } derive(@debug.Debug)
 pub fn ConfigError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+pub(all) enum Choice {
+  Base
+  Ours
+  Theirs
+  Set(Json)
+  Delete
+} derive(@debug.Debug)
+pub fn Choice::to_repr(Self) -> @debug.Repr
+
 pub(all) struct Conflict {
   path : String
   base : Json?
@@ -48,6 +70,12 @@ pub(all) struct Conflict {
 pub fn Conflict::equal(Self, Self) -> Bool
 pub fn Conflict::not_equal(Self, Self) -> Bool
 pub fn Conflict::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Decision {
+  path : String
+  choice : Choice
+} derive(@debug.Debug)
+pub fn Decision::to_repr(Self) -> @debug.Repr
 
 pub(all) struct MergeResult {
   value : Json
@@ -68,6 +96,12 @@ pub(all) enum Operation {
 pub fn Operation::equal(Self, Self) -> Bool
 pub fn Operation::not_equal(Self, Self) -> Bool
 pub fn Operation::to_repr(Self) -> @debug.Repr
+
+pub struct ResolvedMerge {
+  value : Json
+  patch : Array[Operation]
+} derive(@debug.Debug)
+pub fn ResolvedMerge::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

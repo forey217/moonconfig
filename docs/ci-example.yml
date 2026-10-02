@@ -1,0 +1,29 @@
+# Copy into .github/workflows/config-review.yml in a MoonConfig source checkout.
+# Replace fixture paths with the three versions and reviewed decisions you use.
+name: Configuration review example
+on: [workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - run: npm run build
+      - name: Produce reviewed configuration and guarded patch
+        run: |
+          mkdir -p review-output
+          node scripts/moonconfig.mjs resolve examples/base.json examples/ours.json examples/conflict.json examples/decisions.json --output value > review-output/final.json
+          node scripts/moonconfig.mjs resolve examples/base.json examples/ours.json examples/conflict.json examples/decisions.json --output patch > review-output/patch.json
+          node scripts/moonconfig.mjs apply examples/base.json review-output/patch.json > review-output/replayed.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reviewed-configuration
+          path: review-output/
