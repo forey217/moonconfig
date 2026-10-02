@@ -2,7 +2,7 @@
 
 **MoonBit 可嵌入的 JSON 配置三方合并与冲突审查工具。**
 
-v0.2 原型已完成“发现冲突 → 显式决策 → 最终配置 → 校验补丁 → 回放核对”的流程。项目用于准备 2026 MoonBit 黑客松；尚未完成报名、远程交付或 Mooncakes 发布。
+v0.2 原型已完成“发现冲突 → 显式决策 → 最终配置 → 校验补丁 → 回放核对”的流程。完整源码已上传 GitHub，[远程 CI 已通过](docs/ci-verification.md)。项目用于准备 2026 MoonBit 黑客松；尚未完成报名或 Mooncakes 发布。
 
 例如：一人修改端口，一人修改日志等级，自动合并独立字段；双方修改同一端口时，逐项选择原值、某一方、删除或自定义值。导出的补丁先校验整个原始配置，避免应用到已经变化的版本。
 
@@ -27,7 +27,7 @@ npm run build
 npm run demo
 ```
 
-**当前 GitHub 尚未同步完整源码。** 现阶段请使用交付的完整项目包；以上 clone 方式需在远程同步后使用。无需 npm install，本项目没有 npm 依赖。
+无需 npm install，本项目没有 npm 依赖。GitHub 仓库包含完整源码、消费示例和自动验证流程。
 
 打开 http://127.0.0.1:4173，尝试“同字段冲突”“删除与 null”“大整数变更”。选择每个冲突，再确认并导出最终配置或补丁。修改输入会清除已有决策。所有配置计算在当前浏览器本地完成，没有上传接口。
 
@@ -109,7 +109,7 @@ moon test --package forey217/config-gate-example --target js --deny-warn
 
 生态已有 [tiye/recollect](https://mooncakes.io/docs/tiye/recollect) 等 JSON diff/patch 工具。本项目聚焦配置三方合并、明确的缺失/null 冲突、显式决策和可校验的审查输出。不宣称该领域空白、首创或优于已有项目的性能。
 
-目前证据是可运行的公开 API、独立消费模块、网页闭环及 CLI/CI 场景验证；Mooncakes 发布、远程 CI 和外部采用仍未完成。
+目前证据是公开源码、可运行的公开 API、独立消费模块、网页闭环及已通过的远程 CLI/CI 场景验证；Mooncakes 发布和外部采用仍未完成。
 
 ## 验证
 
@@ -125,7 +125,7 @@ node --test tests/cli.test.mjs tests/workflow.test.mjs
 
 工作区共 150 个 MoonBit 测试：库内 148 个（108 个上游 JSON Patch 用例、40 个项目测试），另有独立消费模块 2 个黑盒测试。矩阵用例覆盖 121 组 diff/apply 往返。3 个 Node 集成测试启动真实 CLI，验证精度、冲突、决策、导出、回放、旧 base 拒绝及输入文件不变。
 
-JS 和 WebAssembly GC 本地验证；原生环境缺少 C 编译器，Linux CI 已配置但尚未远程执行。基准脚本 `node scripts/benchmark.mjs` 与 [测量记录](docs/benchmark.md) 提供方法和本机结果，不承诺跨环境性能。
+JS 和 WebAssembly GC 已在本地验证；Linux GitHub Actions 的 JS、WebAssembly GC、原生测试、构建、独立消费示例与 Node 集成测试均已通过，见 [远程验证记录](docs/ci-verification.md)。本地 Windows 缺少 C 编译器。基准脚本 `node scripts/benchmark.mjs` 与 [测量记录](docs/benchmark.md) 提供方法和本机结果，不承诺跨环境性能。
 
 ## 文档与参赛材料
 
@@ -134,6 +134,7 @@ JS 和 WebAssembly GC 本地验证；原生环境缺少 C 编译器，Linux CI �
 - [项目申报草稿](docs/proposal.md)
 - [对照初审反馈的进度](docs/review-plan.md)
 - [开发与验证记录](docs/development.md)
+- [远程 CI 验证证据](docs/ci-verification.md)
 - [English README](README_EN.md)
 
 实现依照 RFC 6901/6902 行为独立编写。上游测试来自 json-patch/json-patch-tests，保留 Apache-2.0 许可；详见 THIRD_PARTY_NOTICES.md。项目代码 MIT。开发使用 AI 辅助，参赛者需理解实现、审查成果并承担维护责任。

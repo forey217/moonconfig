@@ -9,13 +9,15 @@ Version 0.2 closes the review loop. Independent object changes merge; conflicts 
 Requires the official MoonBit toolchain and Node.js 20+. No npm dependencies.
 
 ```sh
+git clone https://github.com/forey217/moonconfig.git
+cd moonconfig
 npm run build
 npm run demo
 ```
 
 Open http://127.0.0.1:4173. Use the conflict scenario, choose each result, confirm, then export the final value or guarded patch. Inputs stay in the browser. Changing inputs clears decisions.
 
-The full source currently exists in the delivered project package and local Git history. GitHub synchronization, Mooncakes publication and contest registration are not complete.
+The full source is available on GitHub, and remote CI has passed. Mooncakes publication and contest registration are not complete. See the [remote verification record](docs/ci-verification.md).
 
 ## CLI
 
@@ -49,7 +51,7 @@ This demonstrates cross-module consumption, not registry installation or externa
 
 ## Validation and boundaries
 
-150 MoonBit workspace tests: 148 library tests (108 upstream cases and 40 project tests) plus 2 consumer black-box tests. Three Node tests exercise real CLI processes and the complete review workflow. JS and Wasm GC are validated locally; native requires a C compiler unavailable on this Windows machine. Remote CI remains unverified.
+150 MoonBit workspace tests: 148 library tests (108 upstream cases and 40 project tests) plus 2 consumer black-box tests. Three Node tests exercise real CLI processes and the complete review workflow. JS and Wasm GC are validated locally. Linux GitHub Actions has passed JS, Wasm GC and native tests, the build, the independent consumer and the Node integration tests. See the [remote verification record](docs/ci-verification.md). A native C compiler remains unavailable on the local Windows machine.
 
 ```sh
 npm run test

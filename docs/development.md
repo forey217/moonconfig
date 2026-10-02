@@ -26,9 +26,9 @@ node --test tests/cli.test.mjs
 
 独立修改自动合并；同字段冲突展示具体路径和三份候选；diff 保留大整数；失败的 test 显示错误并禁用结果复制/下载。检查窄屏单列与宽屏三列布局。
 
-## 尚未验证或完成
+## v0.1 阶段未验证或完成
 
-本地原生测试因缺少 cc/gcc/clang 无法运行。CI 配置包括 Linux 原生测试；配置存在不等于远程检查已经成功。尚未进行生产负载、恶意超深解析、可访问性完整审计、赛事验收或 Mooncakes 发布。
+v0.1 阶段，本地原生测试因缺少 cc/gcc/clang 无法运行，远程 CI 尚未执行；v0.2 已补上远程原生验证，见下方记录。尚未进行生产负载、恶意超深解析、可访问性完整审计、赛事验收或 Mooncakes 发布。
 
 ## 2026-10-02：v0.2 冲突审查流程
 
@@ -42,4 +42,10 @@ node --test tests/cli.test.mjs
 
 另将 `moon package` 产出的 v0.2.0 发布包解压到新的目录，由独立消费模块导入该归档中的库，两个黑盒测试及主程序均通过。发布包不包含开发工作区和消费模块。此检查验证归档完整性及本地依赖运行，不代替 Mooncakes 安装验证。
 
-本机测量见 benchmark.md。CI 模板见 ci-example.yml；远程运行、原生测试、公开包发布及赛事报名仍未完成。
+本机测量见 benchmark.md。配置审查场景模板见 ci-example.yml；仓库的实际验证工作流为 .github/workflows/ci.yml。
+
+## 2026-10-02：公开源码与远程 CI
+
+完整 v0.2 源码已推送到 forey217/moonconfig。GitHub Actions 在提交 4cc2b5d57a22e876ad3f8b5c491602824f087b0a 上完成验证，JS、WebAssembly GC、原生测试、构建、独立消费示例与三个 Node 集成测试均成功。运行链接、时间和检查项见 [远程验证记录](ci-verification.md)。
+
+公开包发布、Mooncakes 安装、外部采用及赛事报名仍未完成。
